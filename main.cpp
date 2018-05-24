@@ -3,8 +3,8 @@ using namespace std;
 
 char opposite_sign='o';
 const int size_of_table=5;
-char tab_symb[5][5]={'x','e','e','e','e',
-                     'e','x','e','e','e',
+char tab_symb[5][5]={'x','e','e','x','e',
+                     'e','e','x','e','e',
                      'x','e','e','e','e',
                      'e','e','e','e','e',
                      'e','e','e','e','o'
@@ -18,28 +18,22 @@ bool left_diagonals(char player_sign) {
     for (int b = 0; b < size_of_table; b++) {                   //pętla dla zejscia w dół
         int ok_1 = 0;                                           // licznik znaków w rzędzie dla przekątnych poniżej i włącznie z środkową przekątna
         int ok_2 = 0;                                           // licznik znaków w rzędzie do wygranej powyżej środkowej przekątnej
-        cout << "oksy" << endl;
-        for (int a = 0; a+b<size_of_table; a++) {                      // pętla chodzenia po kolumnach
+         for (int a = 0; a+b<size_of_table; a++) {                      // pętla chodzenia po kolumnach
             ///////////////////////////////////////////////////////////////////////////////
             ////////////      WŁĄCZNIE I POWYZEJ ŚRODKOWEJ PRZEKĄTNEJ      ///////////////
             if (tab_symb[a][a+b] == player_sign) {
                 ok_1 += 1;
                 if (ok_1 == winSize) {                       //sprawdzamy warunek za każdym nowym rzędem znakow
-                    cout<<"1"<<endl;
                     return true;
                 }
             } else if (tab_symb[a][a+b] == 'e' || opposite_sign) {
                 ok_1 = 0;
-                //cout<<"zerowanie"<<a<<","<<a+b<<endl;
             }
             /////////////////////////////////////////////////////////////////////////////
             /////////////    PONIZEJ ŚRODKOWEJ PRZEKĄTNEJ   ////////////////////////////
-           cout<<a+b<<""<<a<<endl;
             if (tab_symb[b+a][a] == player_sign) {
                 ok_2 += 1;
-                cout<<"{"<<a+b<<","<<a<<"}"<<endl;
                 if (ok_2 == winSize) {
-                    cout<<"winSize"<<endl;
                     return true;
                 }
             } else if (tab_symb[b + a][a] == 'e'||opposite_sign) {
