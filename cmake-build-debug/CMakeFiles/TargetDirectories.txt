@@ -1,3 +1,3 @@
-/home/michal/Pulpit/POLIBUDA/untitled/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/michal/Pulpit/POLIBUDA/untitled/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/michal/Pulpit/POLIBUDA/untitled/cmake-build-debug/CMakeFiles/untitled.dir
+/home/michal/Pulpit/POLIBUDA/Tictactoe_v1.1/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/michal/Pulpit/POLIBUDA/Tictactoe_v1.1/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/michal/Pulpit/POLIBUDA/Tictactoe_v1.1/cmake-build-debug/CMakeFiles/untitled.dir

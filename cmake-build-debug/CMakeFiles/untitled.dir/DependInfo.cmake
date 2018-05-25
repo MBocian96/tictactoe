@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/michal/Pulpit/POLIBUDA/untitled/main.cpp" "/home/michal/Pulpit/POLIBUDA/untitled/cmake-build-debug/CMakeFiles/untitled.dir/main.cpp.o"
+  "/home/michal/Pulpit/POLIBUDA/Tictactoe_v1.1/main.cpp" "/home/michal/Pulpit/POLIBUDA/Tictactoe_v1.1/cmake-build-debug/CMakeFiles/untitled.dir/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

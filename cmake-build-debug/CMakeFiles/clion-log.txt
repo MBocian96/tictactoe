@@ -1,4 +1,4 @@
-/home/michal/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/181.4668.70/bin/cmake/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/michal/Pulpit/POLIBUDA/untitled
+/home/michal/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/181.4668.70/bin/cmake/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/michal/Pulpit/POLIBUDA/Tictactoe_v1.1
 -- The C compiler identification is GNU 5.4.0
 -- The CXX compiler identification is GNU 5.4.0
 -- Check for working C compiler: /usr/bin/cc
@@ -15,4 +15,4 @@
 -- Detecting CXX compile features - done
 -- Configuring done
 -- Generating done
--- Build files have been written to: /home/michal/Pulpit/POLIBUDA/untitled/cmake-build-debug
+-- Build files have been written to: /home/michal/Pulpit/POLIBUDA/Tictactoe_v1.1/cmake-build-debug
