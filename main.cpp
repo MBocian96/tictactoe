@@ -1,16 +1,27 @@
 #include <iostream>
 using namespace std;
-
-char opposite_sign='o';
 const int size_of_table=5;
-char tab_symb[5][5]={'x','e','e','x','e',
-                     'e','e','x','e','e',
+char tab_symb[5][5]={'x','e','e','e','e',
+                     'x','e','x','e','e',
                      'x','e','e','e','e',
                      'e','e','e','e','e',
                      'e','e','e','e','o'
                     };
 int winSize=2;
 
+void  start_game(){
+    cout<<"Wybierz wielkość kwadratowego pola do gry: "<<endl;
+    cin>>size_of_table;
+    cout<<"Wybierz wielkość znaków w rzędzie"<<endl;
+    cin>>winSize;
+    tab_symb[size_of_table][size_of_table]; // nadpisywanie wyjsciowej tablicy pustymi polami
+    for(int i =0; i<size_of_table; i++){
+        for(int j=0; j<size_of_table; i++){
+            tab_symb[i][j]='e';
+        }
+    }
+
+}
 
 
 bool left_diagonals(char player_sign) {
@@ -47,39 +58,36 @@ bool left_diagonals(char player_sign) {
 
 
 bool right_diagonals(char player_sign) {
-    bool tmp = false;                                 // zmienna potwierdzająca zwyciestwo
-    int ok_1 = 0;                                     // licznik znaków w rzędzie dla przekątnych poniżej i włącznie z środkową przekątna
-    int ok_2 = 0;                                      // licznik znaków w rzędzie do wygranej powyżej środkowej przekątnej
-
-    for (int b = size_of_table; b > 0; b--) { //pętla dla zejscia w dół
-        int t = 0;                                // zmienna ograniczająca długość przekątnej
-        for (int a = size_of_table; t >= winSize; a--) {       // pętla chodzenia po kolumnach
-
+int t=1;
+    for (int a = 0; a<size_of_table-1; a++) {                   //pętla dla zejscia w dół
+        int ok_1 = 0;                                           // licznik znaków w rzędzie dla przekątnych poniżej i włącznie z środkową przekątna
+        int ok_2 = 0;    t++;                                       // licznik znaków w rzędzie do wygranej powyżej środkowej przekątnej
+        for (int b = 0; size_of_table-1-b-a>-1; b++) {
             ///////////////////////////////////////////////////////////////////////////////
-            ////////////      WŁĄCZNIE I PONIŻEJ ŚRODKOWEJ PRZEKĄTNEJ      ///////////////
-            if (tab_symb[a][a + b] == player_sign) {
+            ////////////      WŁĄCZNIE I POWYZEJ ŚRODKOWEJ PRZEKĄTNEJ      ///////////////
+            if (tab_symb[b][size_of_table-1-b-a] == player_sign) {
                 ok_1 += 1;
-                if (ok_1 == winSize) { //sprawdzamy warunek za każdym nowym rzędem znakow
+                if (ok_1 == winSize) {                       //sprawdzamy warunek za każdym nowym rzędem znakow
                     return true;
                 }
-            } else if ((tab_symb[a][a + b] == 'e') || (tab_symb[a][a + b] == opposite_sign)) {
+            } else if (tab_symb[b][size_of_table-1-b-a] == 'e' || opposite_sign) {
                 ok_1 = 0;
             }
-
-                /////////////////////////////////////////////////////////////////////////////
-                /////////////    POWYŻEJ ŚRODKOWEJ PRZEKĄTNEJ   ////////////////////////////
-            else if (tab_symb[b + a + 1][a] == player_sign) {
+            /////////////////////////////////////////////////////////////////////////////
+            /////////////    PONIZEJ ŚRODKOWEJ PRZEKĄTNEJ   ////////////////////////////
+            cout<<"["<<a+b<<","<<size_of_table-1-b<<"]"<<endl;
+            if (tab_symb[a+b][size_of_table-1-b] == player_sign) {
                 ok_2 += 1;
-                cout<<"{"<<b+a+1<<","<<a<<endl;
+                cout<<a+b<<","<<size_of_table-1-b<<endl;
                 if (ok_2 == winSize) {
-                    cout<<"winSize"<<endl;
                     return true;
                 }
-            } else if ((tab_symb[b + a + 1][a] == 'e'||opposite_sign)) {
+            } else if (tab_symb[a+b][size_of_table-1-b] == 'e'||opposite_sign) {
                 ok_2 = 0;
             }
         }
     }
+    return false;
 }
 
 bool rows_and_columns(char player_sign) {
@@ -95,7 +103,6 @@ bool rows_and_columns(char player_sign) {
             if (tab_symb[b][a] == player_sign) {
                 ok_1 += 1;
                 if (ok_1 == winSize) {
-                    cout << "ok=winsize" << endl;
                     return true;
                 }
             } else if (tab_symb[b][a] == opposite_sign || 'e') {
@@ -119,7 +126,7 @@ bool isVictory(char player_sign) {
     bool left_diag = left_diagonals('x');
     bool right_diag = right_diagonals('x');
     bool row_and_column = rows_and_columns('x');
-    if ((left_diag) == true)
+    if ((right_diag) == true)
         return true;
     else
         return false;
