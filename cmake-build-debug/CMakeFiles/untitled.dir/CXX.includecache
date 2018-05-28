@@ -9,4 +9,10 @@
 /home/michal/Pulpit/POLIBUDA/Tictactoe_v1.1/main.cpp
 iostream
 -
+cstring
+-
+cstdlib
+-
+vector
+-
 
