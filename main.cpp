@@ -9,6 +9,8 @@ int winSize;
 char oponent;
 char human_sign;
 
+char imie;
+
 void pokaz(vector<vector<char>>tab_symb){
     for(int i=0;i<size_of_table;i++){
         for (int j=0;j<size_of_table;j++){
