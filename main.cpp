@@ -2,6 +2,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <vector>
+#include <iomanip> 
 
 using namespace std;
 int size_of_table;
