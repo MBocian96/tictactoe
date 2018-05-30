@@ -2,7 +2,8 @@
 #include <cstring>
 #include <cstdlib>
 #include <vector>
-#include <iomanip> 
+#include <algorithm>
+
 
 using namespace std;
 int size_of_table;
@@ -10,7 +11,6 @@ int winSize;
 char oponent;
 char human_sign;
 
-char imie;
 
 void pokaz(vector<vector<char>>tab_symb){
     for(int i=0;i<size_of_table;i++){
@@ -33,6 +33,8 @@ char getOpposite_sign(char sign) {
 void start_game(char& player_sign,vector<vector<char>> &tab_symb){
     cout << "Wybierz swój pionek" << endl << "o lub x" << endl;
     cin >> player_sign;
+    if(player_sign=='X') player_sign='x';
+    if(player_sign=='O') player_sign='o';
     cout << "Wybierz wielkość kwadratowego pola do gry: " << endl;
     cin >> size_of_table;
     cout << "Wybierz ilość wygrywających znaków w rzędzie" << endl;
@@ -58,7 +60,6 @@ bool left_diagonals(char player_sign,vector<vector<char>> &tab_symb) {          
             if (tab_symb[a][a + b] == player_sign) {
                 ok_1 += 1;
                 if (ok_1 == winSize) {                       //sprawdzamy warunek za każdym nowym rzędem znakow
-                    cout<<"przekatna z lewej powyzej"<<endl;
                     return true;
                 }
             } else if (tab_symb[a][a + b] == 'e' || opposite_sign)
@@ -69,9 +70,9 @@ bool left_diagonals(char player_sign,vector<vector<char>> &tab_symb) {          
 
             if (tab_symb[b + a][a] == player_sign) {
                 ok_2 += 1;
-                if (ok_2 == winSize){
-                        cout<<"przekatna z lewej ponizej"<<endl;
-                    return true;}
+                if (ok_2 == winSize) {
+                    return true;
+                }
             } else if (tab_symb[b + a][a] == 'e' || opposite_sign)
                 ok_2 = 0;
         }
@@ -229,14 +230,161 @@ void makeStep(char player_sign, vector<vector<char>> &tab_symb) {
         }
     }
 }
-//musze miec funkcje ktora zwroci mi pola w ktore chce wejsc
-//ta funkcja bedzie w sobie badała możliwe wybory
-//gdy dojdzie do mozliwego końca drzewa zwroci mi wartosc o wygranej lub przegranej lub remisie lub wartosc oceny sytuacji jaka saistniala
-//gdy bedzie szła z powrotem bedzie zbierać punkty tych zwroconych wartosci
-//a funkcja oceniająca zwroci mi wartość dla danego ruchu i wyrzuci wspolrzedne ruchu dla którego
-int ocenasytuacji(){}
+
+int getLeftDiagGrade(const char& player_sign,const vector<vector<char>>& tab_symb) {
+
+    char opposite_sign = getOpposite_sign(player_sign);
+    int tmp = 0;
+    for (int b = 0; b < size_of_table; b++) {                               //pętla dla zejscia w dół
+        int ok_1 = 0;                                                       // licznik znaków w rzędzie dla przekątnych poniżej i włącznie z środkową przekątna
+        int ok_2 = 0;                                                       // licznik znaków w rzędzie do wygranej powyżej środkowej przekątnej
+        int tmp_1 = 0;
+        int tmp_2 = 0;
+        for (int a = 0; a + b < size_of_table; a++) {                       // pętla chodzenia po kolumnach
+            ///////////////////////////////////////////////////////////////////////////////
+            ////////////      WŁĄCZNIE I POWYZEJ ŚRODKOWEJ PRZEKĄTNEJ      ///////////////
+            if (tab_symb[a][a + b] == player_sign) {
+                if (tab_symb[a][a + b] == 'e') tmp_1 += 1;
+                if (tab_symb[a][a + b] == player_sign) ok_1 += 1;
+                if (tab_symb[a][a + b] == oponent) {
+                    ok_1 = 0;
+                    tmp_1 = 0;
+                }
+
+                /////////////////////////////////////////////////////////////////////////////
+                /////////////    PONIZEJ ŚRODKOWEJ PRZEKĄTNEJ   ////////////////////////////
+                if (tab_symb[b + a][a] == player_sign) {
+                    if (tab_symb[a + b][a] == 'e') tmp_2 += 1;
+                    if (tab_symb[a + b][a] == player_sign) ok_2 += 1;
+                    if (tab_symb[a + b][a] == oponent) {
+                        ok_2 = 0;
+                        tmp_2 = 0;
+                    }
+
+                }
+            }
+
+        }
+        if (ok_2 + tmp_2 < ok_1 + tmp_1) {
+            if (winSize == ok_2 + tmp_2) return tmp_2;
+        }
+        if (winSize < ok_2 + tmp_2)return winSize + 1;
+
+        if (ok_1 + tmp_1 < ok_2 + tmp_2) {
+            if (winSize == ok_1 + tmp_1) return tmp_2;
+        }
+        if (winSize < ok_1 + tmp_1)return winSize + 1;
+
+    }
+
+}
+
+int getRightDiagGrade(char& player_sign, vector<vector<char>> tab_symb) {
+    char opposite_sign = getOpposite_sign(player_sign);
+
+    for (int a = 0; a < size_of_table - 1; a++) {                   //pętla dla zejscia w dół
+        int ok_1 = 0;                                           // licznik znaków w rzędzie dla przekątnych poniżej i włącznie z środkową przekątna
+        int ok_2 = 0;
+        int tmp_1 = 0;
+        int tmp_2 = 0;
+        for (int b = 0; size_of_table - 1 - b - a > -1; b++) {
+            int x = size_of_table - 1 - b - a;
+            ///////////////////////////////////////////////////////////////////////////////
+            ////////////      WŁĄCZNIE I POWYZEJ ŚRODKOWEJ PRZEKĄTNEJ      ///////////////
+            if (tab_symb[b][x] == 'e') tmp_1 += 1;
+            if (tab_symb[b][x] == player_sign) ok_1 += 1;
+            if (tab_symb[b][x] == opposite_sign) {
+                ok_1 = 0;
+                tmp_1 = 0;
+            }
+
+            /////////////////////////////////////////////////////////////////////////////
+            /////////////    PONIZEJ ŚRODKOWEJ PRZEKĄTNEJ   ////////////////////////////
+
+            int y = size_of_table - 1 - b;
+            if (tab_symb[a + b][y] == 'e') tmp_2 += 1;
+            if (tab_symb[a + b][y] == player_sign) ok_2 += 1;
+            if (tab_symb[a + b][y] == opposite_sign) {
+                ok_2 = 0;
+                tmp_2 = 0;
+            }
+
+        }
+        if (ok_2 + tmp_2 < ok_1 + tmp_1) {
+            if (winSize == ok_2 + tmp_2) return tmp_2;
+        }
+        if (winSize < ok_2 + tmp_2) return winSize + 1;
+
+        if (ok_1 + tmp_1 < ok_2 + tmp_2) {
+            if (winSize == ok_1 + tmp_1) return tmp_2;
+        }
+        if (winSize < ok_1 + tmp_1) return winSize + 1;
+
+    }
+}
 
 
+int getRowsGrade(char& player_sign, vector<vector<char>> tab_symb) {
+    char opposite_sign = getOpposite_sign(player_sign);
+
+    for (int a = 0; a < size_of_table; a++) {
+        int ok_2 = 0;
+        int tmp_2 = 0;
+        for (int b = 0; b < size_of_table; b++) {
+
+            //////////////////////////////////////////////////////
+            /////////       RZĘDY       //////////////////////////
+            if (tab_symb[a][b] == 'e') tmp_2 += 1;
+            if (tab_symb[a][b] == player_sign) ok_2 += 1;
+            if (tab_symb[a][b] == opposite_sign) {
+                ok_2 = 0;
+                tmp_2 = 0;
+            }
+            if (winSize == ok_2 + tmp_2) return tmp_2;
+            if (winSize < ok_2 + tmp_2)return winSize + 1;
+        }
+    }
+}
+
+
+
+int getColumnsGrade(char& player_sign, vector<vector<char>> tab_symb) {
+    char opposite_sign = getOpposite_sign(player_sign);
+    for (int a = 0; a < size_of_table; a++) {
+        int ok_1 = 0; // dla kazdej kolumny/rzedu liczymy od nowa
+        int tmp_1 = 0;
+        for (int b = 0; b < size_of_table; b++) {
+
+            //////////////////////////////////////////////////////
+            /////////       KOLUMNY     /////////////////////////
+
+            if (tab_symb[b][a] == 'e') tmp_1 += 1;
+            if (tab_symb[b][a] == player_sign) ok_1 += 1;
+            if (tab_symb[b][a] == opposite_sign) {
+                ok_1 = 0;
+                tmp_1 = 0;
+            }
+            if (winSize == ok_1 + tmp_1) return tmp_1;
+            if (winSize < ok_1 + tmp_1)return winSize + 1;
+
+        }
+    }
+}
+
+
+int situationMark(char& sign, vector<vector<char>> symulacja) {
+   // int l_g = getLeftDiagGrade(sign, symulacja);
+    int r_g = getRightDiagGrade(sign, symulacja);
+   // int rw_g = getRowsGrade(sign, symulacja);
+   // int cl_g = getColumnsGrade(sign, symulacja);
+   // int marks[4] = {l_g, r_g, rw_g, cl_g};
+    //sort(marks, marks + 4);
+    //return marks[0];
+return r_g;
+}
+
+
+/*
 int minimax(char sign,vector<vector<char>> &symulacja, int poziom) {
     poziom+=1;
     //  sign
@@ -266,58 +414,32 @@ int minimax(char sign,vector<vector<char>> &symulacja, int poziom) {
     }
 }
 
-
-
-int computerStep(char sign, vector<vector<char>> &tablica,int poziom) {
-    vector<vector<char>> symulacja = tablica;
-    if (poziom == 5) {
-        return 0;
-    }
-    //tutaj ocena sytuacji i zwrot oceny
-    if(isVictory(oponent,symulacja)){
-        return  1;
-    }
-    //nizej symulacja
-    int v=0;
-    int vmax;
-    int x,y;
-    showBoard(symulacja);
-    for (int a = 0; a < size_of_table; a++) {
-        for (int b = 0; b < size_of_table; ++b) {
-            if (symulacja[a][b] == 'e') {
-                symulacja[a][b] = sign;
-                vmax += computerStep(sign == 'o' ? 'x' : 'o', symulacja, poziom + 1);
-                if(vmax>v){
-                    x=a;
-                    y=b;
-                }
-                symulacja[a][b] = 'e';
-            }
-        }//for
-    }//for
-            tablica[x][y]=sign;
-}
-
+*/
 int main() {
     vector<vector<char>> tab_symb;
     char your_sign;
-    start_game(your_sign,tab_symb);
+    start_game(your_sign, tab_symb);
     char oponent = getOpposite_sign(your_sign);
     bool winning = false;
     // system("cls");
     showBoard(tab_symb);
     while (!winning) {
-        makeStep(your_sign,tab_symb);
-        winning = isVictory(your_sign,tab_symb);
-        if (isVictory(your_sign,tab_symb)) {
+        makeStep(your_sign, tab_symb);
+        winning = isVictory(your_sign, tab_symb);
+        if (isVictory(your_sign, tab_symb)) {
             cout << "\033[1;32m      Wygrałeś \033[0m" << endl;
             return 0;
         }
-        computerStep(oponent,tab_symb,0);
-        //makeStep(oponent);
-        //winning = isVictory(oponent);
-        //if (isVictory(oponent)) {
-        //  cout << "\033[1;31m     Przegrałeś \033[0m" << endl;
-        // return 0;
+        cout<<"OCENA:"<<
+        situationMark(your_sign, tab_symb)<<endl;
+        makeStep(oponent, tab_symb);
+
+        cout<<"OCENA:"<<
+            situationMark(your_sign, tab_symb)<<endl;
+        winning = isVictory(oponent, tab_symb);
+        if (isVictory(oponent, tab_symb)) {
+            cout << "\033[1;31m     Przegrałeś \033[0m" << endl;
+            return 0;
+        }
     }
 }
