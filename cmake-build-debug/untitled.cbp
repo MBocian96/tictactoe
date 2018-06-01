@@ -84,6 +84,9 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/home/michal/Pulpit/POLIBUDA/Tictactoe_v1.1/cmake-build-debug/gameOptions.h">
+			<Option target="untitled"/>
+		</Unit>
 		<Unit filename="/home/michal/Pulpit/POLIBUDA/Tictactoe_v1.1/main.cpp">
 			<Option target="untitled"/>
 		</Unit>
