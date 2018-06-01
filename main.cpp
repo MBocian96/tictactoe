@@ -6,6 +6,7 @@
 
 
 using namespace std;
+
 int size_of_table;
 int winSize;
 char oponent;
@@ -39,6 +40,13 @@ void start_game(char& player_sign,vector<vector<char>> &tab_symb){
     cin >> size_of_table;
     cout << "Wybierz ilość wygrywających znaków w rzędzie" << endl;
     cin >> winSize;
+    while(winSize>size_of_table){
+        cout<<"Wybierz większy rozmiar lub zredukuj liczbę znaków w rzędzie"<<endl;
+        cout << "Wybierz wielkość kwadratowego pola do gry: " << endl;
+        cin >> size_of_table;
+        cout << "Wybierz ilość wygrywających znaków w rzędzie" << endl;
+        cin >> winSize;
+    }
     tab_symb.resize(size_of_table, vector<char>(size_of_table, 'e'));
     oponent=getOpposite_sign(player_sign);
 }
@@ -115,7 +123,6 @@ bool right_diagonals(char player_sign, vector<vector<char>> &tab_symb) {    //SP
 
 bool rows_and_columns(char player_sign,vector<vector<char>> &tab_symb) {
     char opposite_sign = getOpposite_sign(player_sign);
-
     for (int a = 0; a < size_of_table; a++) {
         int ok_1 = 0; // dla kazdej kolumny/rzedu liczymy od nowa
         int ok_2 = 0;
@@ -191,7 +198,7 @@ enum indicator{A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,R,S,T,U,V,W,X,Y,Z};
 istream& operator >> (istream& input,indicator& tmp) {
     indicator tab[25] = {A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, R, S, T, U, V, W, X, Y, Z};
     char znak='A';
-    input >> znak;
+    input >> znak; // POPRAWIAC WPISYWANE ZNAKI NA WIELKIE
     if (strchr("ABCDEFGHIJKLMNOPRSTUVWXYZ", znak))
         tmp = tab[znak - 'A'];
     return input;
@@ -279,48 +286,79 @@ int getLeftDiagGrade(const char& player_sign,const vector<vector<char>>& tab_sym
 
 }
 
-int getRightDiagGrade(char& player_sign, vector<vector<char>> tab_symb) {
+int getRightDiagGrade_1(char& player_sign, vector<vector<char>> tab_symb) {
     char opposite_sign = getOpposite_sign(player_sign);
-
+    vector<int> marks;
+    marks.reserve(size_of_table);
     for (int a = 0; a < size_of_table - 1; a++) {                   //pętla dla zejscia w dół
-        int ok_1 = 0;                                           // licznik znaków w rzędzie dla przekątnych poniżej i włącznie z środkową przekątna
-        int ok_2 = 0;
+        int ok_1 = 0;
         int tmp_1 = 0;
-        int tmp_2 = 0;
+        int enemy = 0;
         for (int b = 0; size_of_table - 1 - b - a > -1; b++) {
             int x = size_of_table - 1 - b - a;
+            cout << "[" << b << ":" << x << "]" << endl;
             ///////////////////////////////////////////////////////////////////////////////
             ////////////      WŁĄCZNIE I POWYZEJ ŚRODKOWEJ PRZEKĄTNEJ      ///////////////
-            if (tab_symb[b][x] == 'e') tmp_1 += 1;
-            if (tab_symb[b][x] == player_sign) ok_1 += 1;
+            if (tab_symb[b][x] == 'e') {
+                tmp_1 += 1;
+                cout << "e" << endl;
+            }
+            if (tab_symb[b][x] == player_sign) {
+                ok_1 += 1;
+                cout << "x" << endl;
+            }
             if (tab_symb[b][x] == opposite_sign) {
+                ok_1 = 0;
+                tmp_1 = 0;
+                enemy +=1;
+                cout << "ok_1,tmp_1=0" << endl;
+            }
+        }
+
+        if(ok_1){ // jesli wystąpił znak gracza
+            if(ok_1+tmp_1>=winSize){cout<<"MAMY ZNAK I MIJESCE"<<endl; marks.push_back(winSize-ok_1); }            // sprawdź czy ilość pustych pól starczy do zwycięstwa
+        }
+        if(tmp_1>=winSize){cout<<"MAMY MIEJSCE"<<endl; marks.push_back(tmp_1*2) ;}             // jesli jest wystarczająca ilość miejsc do zwycięstwa załóż że jest to jakaś szansa na zwyciestwo
+        if(tmp_1+ok_1<winSize){cout<<"NIE MA MIEJSCA"<<endl; marks.push_back(winSize*10) ;}        // jesli nie ma miejsca na zwycięstwo daj duża wagę by zminimalizować szanse wejscia w
+
+    }
+    sort(marks.begin(),marks.end());
+    return marks[0];
+}
+
+
+int getRightDiagGrade_2(char& player_sign, vector<vector<char>> tab_symb) {
+    char opposite_sign = getOpposite_sign(player_sign);
+    vector<int> marks;
+    marks.reserve(size_of_table);
+    for (int a = 0; a < size_of_table - 1; a++) {                   //pętla dla zejscia w dół
+        int ok_1 = 0;
+        int tmp_1 = 0;
+        for (int b = 0; size_of_table - 1 - b - a > -1; b++) {
+
+            /////////////////////////////////////////////////////////////
+            /////////////    PONIZEJ ŚRODKOWEJ PRZEKĄTNEJ   ////////////////////////////
+            int y = size_of_table - 1 - b;
+
+            cout << "[" << b +1<< ":" << y+1 << "]" << endl;
+            if (tab_symb[a + b][y] == 'e') tmp_1 += 1;
+            if (tab_symb[a + b][y] == player_sign) ok_1 += 1;
+            if (tab_symb[a + b][y] == opposite_sign) {
                 ok_1 = 0;
                 tmp_1 = 0;
             }
 
-            /////////////////////////////////////////////////////////////////////////////
-            /////////////    PONIZEJ ŚRODKOWEJ PRZEKĄTNEJ   ////////////////////////////
-
-            int y = size_of_table - 1 - b;
-            if (tab_symb[a + b][y] == 'e') tmp_2 += 1;
-            if (tab_symb[a + b][y] == player_sign) ok_2 += 1;
-            if (tab_symb[a + b][y] == opposite_sign) {
-                ok_2 = 0;
-                tmp_2 = 0;
-            }
-
         }
-        if (ok_2 + tmp_2 < ok_1 + tmp_1) {
-            if (winSize == ok_2 + tmp_2) return tmp_2;
-        }
-        if (winSize < ok_2 + tmp_2) return winSize + 1;
 
-        if (ok_1 + tmp_1 < ok_2 + tmp_2) {
-            if (winSize == ok_1 + tmp_1) return tmp_2;
+        if( ok_1){ // jesli wystąpił znak gracza
+            if(ok_1+tmp_1>=winSize){cout<<"mamy znak i mijesce"<<endl; marks.push_back( winSize-ok_1);}            // sprawdź czy ilość pustych pól starczy do zwycięstwa
         }
-        if (winSize < ok_1 + tmp_1) return winSize + 1;
+        if(tmp_1>=winSize){cout<<"mamy miejsce"<<endl;marks.push_back(tmp_1*2); }             // jesli jest wystarczająca ilość miejsc do zwycięstwa załóż że jest to jakaś szansa na zwyciestwo
+        if(tmp_1+ok_1<winSize){cout<<"nie starczy miejsca"<<endl; marks.push_back(winSize*10);  }      // jesli nie ma miejsca na zwycięstwo daj duża wagę by zminimalizować szanse wejscia w
 
     }
+    sort(marks.begin(),marks.end());
+    return marks[0];
 }
 
 
@@ -373,14 +411,16 @@ int getColumnsGrade(char& player_sign, vector<vector<char>> tab_symb) {
 
 
 int situationMark(char& sign, vector<vector<char>> symulacja) {
-   // int l_g = getLeftDiagGrade(sign, symulacja);
-    int r_g = getRightDiagGrade(sign, symulacja);
-   // int rw_g = getRowsGrade(sign, symulacja);
-   // int cl_g = getColumnsGrade(sign, symulacja);
-   // int marks[4] = {l_g, r_g, rw_g, cl_g};
-    //sort(marks, marks + 4);
-    //return marks[0];
-return r_g;
+
+    // int l_g = getLeftDiagGrade(sign, symulacja);
+    int r_g1 = getRightDiagGrade_1(sign, symulacja);
+    int r_g2 = getRightDiagGrade_2(sign, symulacja);
+
+    // int rw_g = getRowsGrade(sign, symulacja);
+    // int cl_g = getColumnsGrade(sign, symulacja);
+    int marks[2] = {r_g1, r_g2};
+    sort(marks, marks + 2);
+    return marks[0];
 }
 
 
@@ -416,6 +456,9 @@ int minimax(char sign,vector<vector<char>> &symulacja, int poziom) {
 
 */
 int main() {
+    int cyferka;
+    cyferka =69;
+
     vector<vector<char>> tab_symb;
     char your_sign;
     start_game(your_sign, tab_symb);
