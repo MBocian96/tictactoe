@@ -11,10 +11,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1a498df3-beed-4520-a678-e019d57e7211" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/untitled.dir/main.cpp.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
-    </list>
+    <list default="true" id="1a498df3-beed-4520-a678-e019d57e7211" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -150,16 +147,15 @@
       <workItem from="1527548239930" duration="6030000" />
       <workItem from="1527606597567" duration="26359000" />
       <workItem from="1527772644746" duration="5087000" />
-      <workItem from="1527870794340" duration="18157000" />
+      <workItem from="1527870794340" duration="18757000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="144600000" />
+    <option name="totallyTimeSpent" value="145200000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="-1" width="1366" height="768" extended-state="6" />
-    <editor active="true" />
+    <frame x="0" y="-1" width="1366" height="768" extended-state="7" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.24963397" />
       <window_info anchor="bottom" id="TODO" order="5" />
