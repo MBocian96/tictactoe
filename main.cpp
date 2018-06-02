@@ -557,7 +557,8 @@ int situationMark(char& sign, vector<vector<char>> symulacja) {
 
 
 /*
-int minimax(char sign,vector<vector<char>> &symulacja, int poziom) {
+
+ int minimax(char sign,vector<vector<char>> &symulacja, int poziom) {
     poziom+=1;
     //  sign
     // chose the best
