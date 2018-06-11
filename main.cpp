@@ -10,7 +10,7 @@ using namespace std;
 int board_size;
 unsigned int winSize;
 char oponent;
-
+char player_sign;
 
 
 char getOpposite_sign(char sign) {
@@ -21,7 +21,7 @@ char getOpposite_sign(char sign) {
     }
 }
 
-void start_game(char& player_sign,vector<vector<char>> &tab_symb) {
+void start_game(vector<vector<char>> &tab_symb) {
     cout << "Wybierz swój pionek" << endl << "o lub x" << endl;
     cin >> player_sign;
     if (player_sign == 'X') player_sign = 'x';
@@ -495,54 +495,150 @@ int situationMark(char sign, vector<vector<char>> symulacja) {
      int cl_g = getColumnsGrade(sign, symulacja);
      int marks[6] = {l_g1, l_g2, r_g1, r_g2, rw_g, cl_g};
      sort(marks, marks + 6);
+     //cout<<marks[0]<<endl;
      return marks[0];
-     
+
 }
+class Situation {
+public:
+    int w;
+    int k;
+    int mark;
 
+    Situation() {
+        w = 2;
+        k = 2;
+        mark = 0;
+    }
 
-int minimax(char sign,vector<vector<char>> symulacja, int poziom) {
+    Situation(int a, int b, int c) {
+        w = a;
+        k = b;
+        mark = c;
+    }
 
-    showBoard(symulacja);
+    Situation(const Situation &C
+    ) : w(C.w), k(C.k), mark(C.mark){}
+    ~Situation() {}
+    Situation operator = (const Situation & E){
+        this->w=E.w;
+        this->k=E.k;
+        this->mark=E.mark;
+    }
+};
+
+Situation minimax(char sign,vector<vector<char>> symulacja, int poziom,int& alfa, int& beta,int V) {
+    if(isVictory(oponent,symulacja)){
+        Situation x;
+        x.mark=0;
+        //cout<<"Win for: "<<oponent<<endl;
+        //cout<<x.mark<<endl;
+        return x;
+    }
+
+    if(isVictory(player_sign,symulacja)){
+        Situation x;
+        x.mark=winSize*40;
+     //   cout<<"Win for: "<<player_sign<<endl;
+       // cout<<x.mark;
+        return x;
+    }
+
+    poziom+=1;
     char oponent_sign = getOpposite_sign(sign);
-    if (poziom == 2) return 0;//situationMark(sign, symulacja);
-    poziom += 1;
-    for (int b = 0; b < board_size; b++) {
+
+    if (poziom == 6) {
+        Situation tmp;
+  tmp.mark=situationMark(oponent,symulacja);
+  //cout<<"TMP: "<<tmp.mark<<endl;
+  return tmp;
+    }
+
+    Situation val;
+    Situation var;
+    int vmin=winSize*10;
+    int vmax=0;
+    int alfa=9999;
+    int beta=-9999;
+    //cout<<"PRZED PĘTLAMI "<<endl;
         for (int a = 0; a < board_size; a++) {
+            for (int b = 0; b < board_size; b++) {
             if (symulacja[a][b] == 'e') {
                 symulacja[a][b] = sign;
-                cout << "OCENA: " << situationMark('x', symulacja)<<endl;//<<"  " <<sign<<endl<<endl<<endl;
-                minimax(oponent_sign, symulacja, poziom);
+                //showBoard(symulacja);
+                var=minimax(oponent_sign,symulacja,poziom,alfa,beta);
+
+
+
+
+
+
+
+
+
+//minimax & alfabeta
+                if (sign == oponent) { // maximiser, computer
+                   if(B>beta) break;
+                       if (var.mark < V) {
+                           if (var.mark > alfa) alfa = var.mark;
+                           V = alfa;
+                       }
+
+                    if (var.mark < vmin) {
+                        vmin=var.mark;
+                        val.k = a;
+                        val.w = b;
+                        val.mark=vmin;
+
+                    }
+                }
+                if (sign == player_sign) { // minimiser, human player
+                    if (var.mark > vmax) { // sprawdzanie który węzeł dał najlepsze prawdopodobienstwo wygranej
+                         vmin=var.mark;
+                        val.k = a;
+                        val.w = b;
+                        val.mark=vmin
+                    }
+                }
+
                 symulacja[a][b] = 'e';
             }
         }
     }
+
+    return val;
 }
 
 
+void computerMakeStep(Situation& x, vector<vector<char>> &tab_symb){
+    tab_symb[x.k][x.w]=oponent;
+}
 
 
 int main() {
-
+Situation var;
     vector<vector<char>> tab_symb;
-    char your_sign;
-    start_game(your_sign, tab_symb);
+    start_game(tab_symb);
+    char your_sign=player_sign;
     char oponent = getOpposite_sign(your_sign);
     bool winning = false;
     showBoard(tab_symb);
+    int infinity=9999999;
+    int minus_infinity=-infinity;
     while (!winning) {
 
         makeStep(your_sign, tab_symb);
         winning = isVictory(your_sign, tab_symb);
-        cout << situationMark('x', tab_symb) << endl;
+       // cout << situationMark('x', tab_symb) << endl;
         if (isVictory(your_sign, tab_symb)) {
             cout << "\033[1;32m      Wygrałeś \033[0m" << endl;
             return 0;
         }
-        // minimax(oponent,tab_symb,0);
-
-        makeStep(oponent, tab_symb);
+        /////////// znak, ,stan gry, poziom, alfa,      beta,       V
+        var=minimax(oponent,tab_symb,0,infinity,minus_infinity,minus_infinity);
+        computerMakeStep(var,tab_symb);
+        showBoard(tab_symb);
         winning = isVictory(oponent, tab_symb);
-        cout << situationMark('x', tab_symb) << endl;
         if (isVictory(oponent, tab_symb)) {
             cout << "\033[1;31m     Przegrałeś \033[0m" << endl;
             return 0;
