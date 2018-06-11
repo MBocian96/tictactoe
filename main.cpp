@@ -248,8 +248,8 @@ void makeStep(char player_sign, vector<vector<char>> &tab_symb) {
 
 
 // skanowanie POWYŻEJ I RAZEM Z ŚRODK. PRZEKĄTNĄ
-int getLeftDiagGrade_1(const char& player_sign,const vector<vector<char>>& tab_symb) {// skanowanie POWYŻEJ I RAZEM Z ŚRODK. PRZEKĄTNĄ
-    vector<int> marks;
+double getLeftDiagGrade_1(const char& player_sign, vector<vector<char>>& tab_symb) {// skanowanie POWYŻEJ I RAZEM Z ŚRODK. PRZEKĄTNĄ
+    vector<double> marks;
     marks.reserve(board_size);
     char opposite_sign = getOpposite_sign(player_sign);
 
@@ -266,32 +266,36 @@ int getLeftDiagGrade_1(const char& player_sign,const vector<vector<char>>& tab_s
             }
 
 
-            // co znak sprawdza stan, i natychmiast daje znać
-
-            if (ok_1) {                                                                // jesli wystąpił znak gracza
-                if (ok_1 + tmp_1 >= winSize) {
-                    marks.push_back(winSize - ok_1);
-                }                                                                      // sprawdź czy ilość pustych pól starczy do zwycięstwa
+            // co linie sprawdzamy stan
+            if(isVictory(player_sign,tab_symb)){
+                  marks.push_back(1);
             }
-            if (!ok_1) {
-                if (tmp_1 >= winSize) marks.push_back(tmp_1 * 2);
+            if(isVictory(opposite_sign,tab_symb)){
+                     marks.push_back(-1);
             }
-            // po sprawdzeniu całej linni sprawdza czy nie ma wgl miejsca
-        }// jesli jest wystarczająca ilość miejsc do zwycięstwa załóż że jest to jakaś szansa na zwyciestwo
-        if (tmp_1 + ok_1 < winSize) marks.push_back(winSize * 10);
+            if (ok_1) {                                 // jesli wystąpił znak gracza
+                if (ok_1 + tmp_1 >= winSize)
+                    marks.push_back(1 - ((winSize - ok_1) * 0.1));
+            }
+            if (!ok_1) {                                // jesli jest wystarczająca ilość miejsc do zwycięstwa załóż że jest to jakaś szansa na zwyciestwo
+                if (tmp_1 >= winSize)
+                      marks.push_back(tmp_1 * 0.01);
+            }
+        }
+        if (tmp_1 + ok_1 < winSize)
+             marks.push_back(0.000000001);
         // jesli nie ma miejsca na zwycięstwo daj duża wagę by zminimalizować szanse wejscia w
-
     }
-
     sort(marks.begin(), marks.end());
-    return marks[0];
+
+    return marks.back(); // zwróc najwyższą wartość czyli najbardziej prawdopodbne zwycięstwo,, tzn z konca tablicy
 }
 
 
 
 // poniżej środkowej przekątnej
-int getLeftDiagGrade_2(const char& player_sign,const vector<vector<char>>& tab_symb) {
-    vector<int> marks;
+double getLeftDiagGrade_2(const char& player_sign, vector<vector<char>>& tab_symb) {
+    vector<double> marks;
     marks.reserve(board_size);
     char opposite_sign = getOpposite_sign(player_sign);
 
@@ -308,30 +312,35 @@ int getLeftDiagGrade_2(const char& player_sign,const vector<vector<char>>& tab_s
 
 
             // co linie sprawdzamy stan
-
-            if (ok_1) {                                                             // jesli wystąpił znak gracza
-                if (ok_1 + tmp_1 >= winSize) marks.push_back(winSize -
-                                                             ok_1);                                               // sprawdź czy ilość pustych pól starczy do zwycięstwa
+            if(isVictory(player_sign,tab_symb)){
+                marks.push_back(1);
             }
-            if (!ok_1) {                                                              //jesli nie ma znaku gracza
+            if(isVictory(opposite_sign,tab_symb)){
+                marks.push_back(-1);
+            }
+            if (ok_1) {                                 // jesli wystąpił znak gracza
+                if (ok_1 + tmp_1 >= winSize)
+                    marks.push_back(1-((winSize - ok_1) * 0.1));
+            }
+
+            if (!ok_1) {                                // jesli jest wystarczająca ilość miejsc do zwycięstwa załóż że jest to jakaś szansa na zwyciestwo
                 if (tmp_1 >= winSize)
-                    marks.push_back(tmp_1 * 2);
+                    marks.push_back(tmp_1 * 0.01);
             }
-        }// jesli jest wystarczająca ilość miejsc do zwycięstwa załóż że jest to jakaś szansa na zwyciestwo
+        }
         if (tmp_1 + ok_1 < winSize)
-            marks.push_back(winSize *
-                            10);                             // jesli nie ma miejsca na zwycięstwo daj duża wagę by zminimalizować szanse wejscia w
-
+            marks.push_back(0.000000001);
+        // jesli nie ma miejsca na zwycięstwo daj duża wagę by zminimalizować szanse wejscia w
     }
     sort(marks.begin(), marks.end());
-    return marks[0];
+    return marks.back(); // zwróc najwyższą wartość czyli najbardziej prawdopodbne zwycięstwo
 }
 
 
 //WŁĄCZNIE I POWYZEJ ŚRODKOWEJ PRZEKĄTNEJ
-int getRightDiagGrade_1(char& player_sign,vector<vector<char>>& tab_symb) {
+double getRightDiagGrade_1(char& player_sign,vector<vector<char>>& tab_symb) {
     char opposite_sign = getOpposite_sign(player_sign);
-    vector<int> marks;
+    vector<double> marks;
     marks.reserve(board_size);
     for (int a = 0; a < board_size - 1; a++) {                         //pętla dla zejscia w dół
         int ok_1 = 0;
@@ -351,29 +360,35 @@ int getRightDiagGrade_1(char& player_sign,vector<vector<char>>& tab_symb) {
                 tmp_1 = 0;
             }
 
+            // co linie sprawdzamy stan
+            if(isVictory(player_sign,tab_symb)){
+                marks.push_back(1);
+            }
+            if(isVictory(opposite_sign,tab_symb)){
+                marks.push_back(-1);
+            }
+            if (ok_1) {                                 // jesli wystąpił znak gracza
+                if (ok_1 + tmp_1 >= winSize)
+                    marks.push_back(1-((winSize - ok_1) * 0.1));
+            }
 
-        if (ok_1) {                                                           // jesli wystąpił znak gracza
-            if (ok_1 + tmp_1 >= winSize)
-                marks.push_back(winSize -
-                                ok_1);                                            // sprawdź czy ilość pustych pól starczy do zwycięstwa
+            if (!ok_1) {                                // jesli jest wystarczająca ilość miejsc do zwycięstwa załóż że jest to jakaś szansa na zwyciestwo
+                if (tmp_1 >= winSize)
+                    marks.push_back(tmp_1 * 0.01);
+            }
         }
-        if (!ok_1) {
-            if (tmp_1 >= winSize)
-                marks.push_back(tmp_1 * 2);
-        }                                                            // jesli jest wystarczająca ilość miejsc do zwycięstwa załóż że jest to jakaś szansa na zwyciestwo
         if (tmp_1 + ok_1 < winSize)
-            marks.push_back(winSize * 10);
+            marks.push_back(0.000000001);
         // jesli nie ma miejsca na zwycięstwo daj duża wagę by zminimalizować szanse wejscia w
     }
-    }
     sort(marks.begin(), marks.end());
-    return marks[0];
+    return marks.back(); // zwróc najwyższą wartość czyli najbardziej prawdopodbne zwycięstwo
 }
 
 //    PONIZEJ ŚRODKOWEJ PRZEKĄTNEJ
-int getRightDiagGrade_2(char& player_sign, vector<vector<char>> tab_symb) {
+double getRightDiagGrade_2(char& player_sign, vector<vector<char>> tab_symb) {
     char opposite_sign = getOpposite_sign(player_sign);
-    vector<int> marks;
+    vector<double> marks;
     marks.reserve(board_size);
 
     for (int a = 0; a < board_size - 1; a++) {                   //pętla dla zejscia w dół
@@ -389,29 +404,35 @@ int getRightDiagGrade_2(char& player_sign, vector<vector<char>> tab_symb) {
                 tmp_1 = 0;
             }
 
-
-            if (ok_1) {                                                                // jesli wystąpił znak gracza
+            // co linie sprawdzamy stan
+            if(isVictory(player_sign,tab_symb)){
+                marks.push_back(1);
+            }
+            if(isVictory(opposite_sign,tab_symb)){
+                marks.push_back(-1);
+            }
+            if (ok_1) {                                 // jesli wystąpił znak gracza
                 if (ok_1 + tmp_1 >= winSize)
-                    marks.push_back(winSize - ok_1);
+                    marks.push_back((winSize - ok_1)*0.1);
             }
 
-            if (!ok_1) {
+            if (!ok_1) {                                // jesli jest wystarczająca ilość miejsc do zwycięstwa załóż że jest to jakaś szansa na zwyciestwo
                 if (tmp_1 >= winSize)
-                    marks.push_back(tmp_1 * 2);
+                    marks.push_back(1-((winSize - ok_1) * 0.1));
             }
-        }// jesli jest wystarczająca ilość miejsc do zwycięstwa załóż że jest to jakaś szansa na zwyciestwo
+        }
         if (tmp_1 + ok_1 < winSize)
-            marks.push_back(winSize * 10);
+            marks.push_back(0.000000001);
         // jesli nie ma miejsca na zwycięstwo daj duża wagę by zminimalizować szanse wejscia w
     }
     sort(marks.begin(), marks.end());
-    return marks[0];
+    return marks.back(); // zwróc najwyższą wartość czyli najbardziej prawdopodbne zwycięstwo
 }
 
 
-int getRowsGrade(char& player_sign, vector<vector<char>> tab_symb) {
+double getRowsGrade(char& player_sign, vector<vector<char>> tab_symb) {
     char opposite_sign = getOpposite_sign(player_sign);
-    vector<int> marks;
+    vector<double> marks;
     marks.reserve(board_size);
 
     for (int a = 0; a < board_size; a++) {
@@ -427,30 +448,41 @@ int getRowsGrade(char& player_sign, vector<vector<char>> tab_symb) {
 
 
             // co linie sprawdzamy stan
+            if (isVictory(player_sign, tab_symb)) {
+                marks.push_back(1);
 
-            if (ok_1) {                                                            // jesli wystąpił znak gracza
-                if (ok_1 + tmp_1 >= winSize)
-                    marks.push_back(winSize -
-                                    ok_1);                                                                 // sprawdź czy ilość pustych pól starczy do zwycięstwa
             }
-            if (!ok_1) {
-                if (tmp_1 >= winSize)
-                    marks.push_back(tmp_1 * 2);
+            if (isVictory(opposite_sign, tab_symb)) {
+                marks.push_back(-1);
+
             }
-        }// jesli jest wystarczająca ilość miejsc do zwycięstwa załóż że jest to jakaś szansa na zwyciestwo
-        if (tmp_1 + ok_1 < winSize)
-            marks.push_back(winSize * 10);
+            if (ok_1) {                                 // jesli wystąpił znak gracza
+                if (ok_1 + tmp_1 >= winSize) {
+                    marks.push_back(1-((winSize - ok_1) * 0.1));
+                }
+            }
+
+            if (!ok_1) {                                // jesli jest wystarczająca ilość miejsc do zwycięstwa załóż że jest to jakaś szansa na zwyciestwo
+                if (tmp_1 >= winSize) {
+
+                    marks.push_back(tmp_1 * 0.01);
+                }
+            }
+        }
+        if (tmp_1 + ok_1 < winSize) {
+             marks.push_back(0.000000001);
+        }
         // jesli nie ma miejsca na zwycięstwo daj duża wagę by zminimalizować szanse wejscia w
-
     }
+
     sort(marks.begin(), marks.end());
-    return marks[0];
+      return marks.back(); // zwróc najwyższą wartość czyli najbardziej prawdopodbne zwycięstwo
 }
 
 
 
-int getColumnsGrade(char& player_sign, vector<vector<char>> tab_symb) {
-    vector<int> marks;
+double getColumnsGrade(char& player_sign, vector<vector<char>> tab_symb) {
+    vector<double> marks;
     marks.reserve(board_size);
     char opposite_sign = getOpposite_sign(player_sign);
 
@@ -468,53 +500,75 @@ int getColumnsGrade(char& player_sign, vector<vector<char>> tab_symb) {
 
             // co linie sprawdzamy stan
 
-            if (ok_1) {                                                                          // jesli wystąpił znak gracza
+            if (isVictory(player_sign, tab_symb)) {
+                marks.push_back(1);
+            }
+            if (isVictory(opposite_sign, tab_symb)) {
+                marks.push_back(-1);
+            }
+            if (ok_1) {                                 // jesli wystąpił znak gracza i jest miejsce do grania
                 if (ok_1 + tmp_1 >= winSize)
-                    marks.push_back(winSize - ok_1);
+                    marks.push_back(1-((winSize - ok_1) * 0.1));
             }
 
-            if (!ok_1) {
+            if (!ok_1) {                                // jesli jest wystarczająca ilość miejsc do zwycięstwa załóż że jest to jakaś szansa na zwyciestwo
                 if (tmp_1 >= winSize)
-                    marks.push_back(tmp_1 * 2);
+                    marks.push_back(tmp_1 * 0.01);
             }
-        }// jesli jest wystarczająca ilość miejsc do zwycięstwa załóż że jest to jakaś szansa na zwyciestwo
+        }
         if (tmp_1 + ok_1 < winSize)
-            marks.push_back(winSize * 10);
-        // jesli nie ma miejsca na zwycięstwo daj duża wagę by zminimalizować szanse wejscia w
+            marks.push_back(0.000000001);
+        // jesli nie ma miejsca na zwycięstwo daj małą wage by zminimalizować szanse wejscia w
     }
     sort(marks.begin(), marks.end());
-    return marks[0];
+    return marks.back(); // zwróc najwyższą wartość czyli najbardziej prawdopodbne zwycięstwo
 }
 
-int situationMark(char sign, vector<vector<char>> symulacja) {
-     int l_g1 = getLeftDiagGrade_1(sign, symulacja);
-     int l_g2 = getLeftDiagGrade_2(sign, symulacja);
-     int r_g1 = getRightDiagGrade_1(sign, symulacja);
-     int r_g2 = getRightDiagGrade_2(sign, symulacja);
-     int rw_g = getRowsGrade(sign, symulacja);
-     int cl_g = getColumnsGrade(sign, symulacja);
-     int marks[6] = {l_g1, l_g2, r_g1, r_g2, rw_g, cl_g};
-     sort(marks, marks + 6);
-     //cout<<marks[0]<<endl;
-     return marks[0];
+double situationMark(char sign, vector<vector<char>> symulacja) {
+    double l_g1 = getLeftDiagGrade_1(sign, symulacja);
+    double l_g2 = getLeftDiagGrade_2(sign, symulacja);
+    double r_g1 = getRightDiagGrade_1(sign, symulacja);
+    double r_g2 = getRightDiagGrade_2(sign, symulacja);
+    double rw_g = getRowsGrade(sign, symulacja);
+    double cl_g = getColumnsGrade(sign, symulacja);
+    cout << "OCENY WYPISANE ZE ZMIENNYCH: " << endl;
+    cout << "l_g1: " << l_g1 << endl;
+    cout << "l_g2: " << l_g2 << endl;
+    cout << "r_g2: " << r_g1 << endl;
+    cout << "r_g2: " << r_g2 << endl;
+    cout << "rw_g: " << rw_g << endl;
+    cout << "cl_g2: " << cl_g << endl;
 
+    double marks[6] = {l_g1, l_g2, r_g1, r_g2, rw_g, cl_g};
+    sort(marks, marks + 6);
+    cout<<"POSORTOWANA TABLICA OCEN: "<<endl;
+    for(auto i:marks) cout<<i<<endl;
+    cout<<"OCENA ZWRACANA: "<<marks[5]<<endl;
+    return marks[5];
 }
+
 class Situation {
 public:
+    double alfa;
+    double beta;
     int w;
     int k;
-    int mark;
+    double mark;
 
     Situation() {
-        w = 2;
-        k = 2;
+        w = 1;
+        alfa=-999999;
+        beta=999999;
+        k = 1;
         mark = 0;
     }
 
-    Situation(int a, int b, int c) {
+    Situation(int a, int b, double c,double d, double e) {
         w = a;
         k = b;
         mark = c;
+        alfa = d;
+        beta = e;
     }
 
     Situation(const Situation &C
@@ -524,80 +578,98 @@ public:
         this->w=E.w;
         this->k=E.k;
         this->mark=E.mark;
+        this->alfa=E.alfa;
+        this->beta=E.beta;
     }
 };
 
-Situation minimax(char sign,vector<vector<char>> symulacja, int poziom,int& alfa, int& beta,int V) {
-    if(isVictory(oponent,symulacja)){
-        Situation x;
-        x.mark=0;
-        //cout<<"Win for: "<<oponent<<endl;
-        //cout<<x.mark<<endl;
-        return x;
-    }
+Situation minimax(char sign,vector<vector<char>> symulacja, int poziom,double& alfa, double& beta,double V) {
+    /*
+     if(isVictory(oponent,symulacja)){
+         Situation x;
+         x.mark=0;
+         //cout<<"Win for: "<<oponent<<endl;
+         //cout<<x.mark<<endl;
+         return x;
+     }
 
-    if(isVictory(player_sign,symulacja)){
-        Situation x;
-        x.mark=winSize*40;
-     //   cout<<"Win for: "<<player_sign<<endl;
-       // cout<<x.mark;
-        return x;
-    }
+     if(isVictory(player_sign,symulacja)){
+         Situation x;
+         x.mark=winSize*40;
+      //   cout<<"Win for: "<<player_sign<<endl;
+        // cout<<x.mark;
+         return x;
+     }
+ */
 
-    poziom+=1;
     char oponent_sign = getOpposite_sign(sign);
 
-    if (poziom == 6) {
+    if (poziom == 1) {
         Situation tmp;
-  tmp.mark=situationMark(oponent,symulacja);
-  //cout<<"TMP: "<<tmp.mark<<endl;
-  return tmp;
+        tmp.mark = situationMark(oponent, symulacja);
+        return tmp;
     }
 
     Situation val;
     Situation var;
-    int vmin=winSize*10;
-    int vmax=0;
-    int alfa=9999;
-    int beta=-9999;
+    double vmax = winSize * 10000;
+    double vmin = 0;
     //cout<<"PRZED PĘTLAMI "<<endl;
-        for (int a = 0; a < board_size; a++) {
-            for (int b = 0; b < board_size; b++) {
+    for (int a = 0; a < board_size; a++) {
+        for (int b = 0; b < board_size; b++) {
             if (symulacja[a][b] == 'e') {
                 symulacja[a][b] = sign;
-                //showBoard(symulacja);
-                var=minimax(oponent_sign,symulacja,poziom,alfa,beta);
-
-
-
-
-
-
-
-
-
+                // showBoard(symulacja);
+                var = minimax(oponent_sign, symulacja, ++poziom, alfa, beta, V);
+                //    cout<<val.mark<<endl;
 //minimax & alfabeta
                 if (sign == oponent) { // maximiser, computer
-                   if(B>beta) break;
-                       if (var.mark < V) {
-                           if (var.mark > alfa) alfa = var.mark;
-                           V = alfa;
-                       }
 
-                    if (var.mark < vmin) {
-                        vmin=var.mark;
+                    ///////// alfa beta pruninng
+                    // bedziemy przerywać pętle lub nie w zależności od załóżeń algorytmu
+                    // warunki algorytmu sprawdzane na poczatku i albo jedziemy dalej albo nie
+/*
+                        if (V > beta) {
+                            cout << "PRUNNING" << sign << endl;
+                            break;
+                        }
+                        if (var.mark > V) {
+                            if (var.mark > alfa) alfa = var.mark;
+                            V = alfa;
+                        }
+
+*/
+                    if (var.mark > vmin) {
+                        vmin = var.mark;
                         val.k = a;
                         val.w = b;
-                        val.mark=vmin;
+                        val.mark = vmin;
 
                     }
                 }
+
                 if (sign == player_sign) { // minimiser, human player
-                    if (var.mark > vmax) { // sprawdzanie który węzeł dał najlepsze prawdopodobienstwo wygranej
-                         vmin=var.mark;
+                    ////////alfa beta prunning
+                    /*
+                            if (V < beta) {
+                                cout << "PRUNNING" << sign << endl;
+                                break;
+                            }
+                            if (B < alfa) {
+                                cout << "PRUNNING" << sign << endl;
+                                break;
+                            }
+                            if (var.mark < V) {
+                                beta = var.mark;
+                                V = beta;
+                            }
+    */
+
+                    if (var.mark < vmax) { // sprawdzanie który węzeł dał najlepsze prawdopodobienstwo wygranej
+                        vmax = var.mark;
                         val.k = a;
                         val.w = b;
-                        val.mark=vmin
+                        val.mark = vmax;
                     }
                 }
 
@@ -605,7 +677,6 @@ Situation minimax(char sign,vector<vector<char>> symulacja, int poziom,int& alfa
             }
         }
     }
-
     return val;
 }
 
@@ -616,28 +687,31 @@ void computerMakeStep(Situation& x, vector<vector<char>> &tab_symb){
 
 
 int main() {
-Situation var;
+    Situation var;
     vector<vector<char>> tab_symb;
     start_game(tab_symb);
-    char your_sign=player_sign;
+    char your_sign = player_sign;
     char oponent = getOpposite_sign(your_sign);
     bool winning = false;
     showBoard(tab_symb);
-    int infinity=9999999;
-    int minus_infinity=-infinity;
+    double infinity = 9999999;
+    double minus_infinity = -infinity;
     while (!winning) {
 
         makeStep(your_sign, tab_symb);
         winning = isVictory(your_sign, tab_symb);
-       // cout << situationMark('x', tab_symb) << endl;
+        cout << "situationMark(): " << situationMark('x', tab_symb) << endl << "::::::::::::::::::::::::::::::" << endl;
         if (isVictory(your_sign, tab_symb)) {
             cout << "\033[1;32m      Wygrałeś \033[0m" << endl;
             return 0;
         }
         /////////// znak, ,stan gry, poziom, alfa,      beta,       V
-        var=minimax(oponent,tab_symb,0,infinity,minus_infinity,minus_infinity);
-        computerMakeStep(var,tab_symb);
+        //var=minimax(oponent,tab_symb,0,minus_infinity,infinity,minus_infinity);
+        //computerMakeStep(var,tab_symb);
+        makeStep(oponent, tab_symb);
         showBoard(tab_symb);
+        cout << "situationMark(): " << situationMark('o', tab_symb) << endl << "::::::::::::::::::::::::::::::    "
+             << endl;
         winning = isVictory(oponent, tab_symb);
         if (isVictory(oponent, tab_symb)) {
             cout << "\033[1;31m     Przegrałeś \033[0m" << endl;
