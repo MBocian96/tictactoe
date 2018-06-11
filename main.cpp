@@ -41,6 +41,16 @@ void start_game(vector<vector<char>> &tab_symb) {
     oponent = getOpposite_sign(player_sign);
 }
 
+bool isEmpty(vector<vector<char>> tab) { // return true if empty
+    bool idx=1;
+    for (int a = 0; a < board_size; a++) {
+        for (int b = 0; b < board_size; b++) {
+            if(tab[a][b]=='e') idx=0;
+        }
+    }
+    return idx;
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                             //ZNAJDYWANIE ZWYCIESTWA
@@ -531,19 +541,19 @@ double situationMark(char sign, vector<vector<char>> symulacja) {
     double r_g2 = getRightDiagGrade_2(sign, symulacja);
     double rw_g = getRowsGrade(sign, symulacja);
     double cl_g = getColumnsGrade(sign, symulacja);
-    cout << "OCENY WYPISANE ZE ZMIENNYCH: " << endl;
+   /* cout << "OCENY WYPISANE ZE ZMIENNYCH: " << endl;
     cout << "l_g1: " << l_g1 << endl;
     cout << "l_g2: " << l_g2 << endl;
     cout << "r_g2: " << r_g1 << endl;
     cout << "r_g2: " << r_g2 << endl;
     cout << "rw_g: " << rw_g << endl;
     cout << "cl_g2: " << cl_g << endl;
-
+*/
     double marks[6] = {l_g1, l_g2, r_g1, r_g2, rw_g, cl_g};
     sort(marks, marks + 6);
-    cout<<"POSORTOWANA TABLICA OCEN: "<<endl;
-    for(auto i:marks) cout<<i<<endl;
-    cout<<"OCENA ZWRACANA: "<<marks[5]<<endl;
+  //  cout<<"POSORTOWANA TABLICA OCEN: "<<endl;
+   // for(auto i:marks) cout<<i<<endl;
+    //cout<<"OCENA ZWRACANA: "<<marks[5]<<endl;
     return marks[5];
 }
 
@@ -584,31 +594,20 @@ public:
 };
 
 Situation minimax(char sign,vector<vector<char>> symulacja, int poziom,double& alfa, double& beta,double V) {
-    /*
-     if(isVictory(oponent,symulacja)){
-         Situation x;
-         x.mark=0;
-         //cout<<"Win for: "<<oponent<<endl;
-         //cout<<x.mark<<endl;
-         return x;
-     }
-
-     if(isVictory(player_sign,symulacja)){
-         Situation x;
-         x.mark=winSize*40;
-      //   cout<<"Win for: "<<player_sign<<endl;
-        // cout<<x.mark;
-         return x;
-     }
- */
 
     char oponent_sign = getOpposite_sign(sign);
 
-    if (poziom == 1) {
+    if (isEmpty(symulacja)) {
         Situation tmp;
         tmp.mark = situationMark(oponent, symulacja);
         return tmp;
     }
+
+    if (poziom == 6) {
+        Situation tmp;
+        tmp.mark = situationMark(oponent, symulacja);
+        return tmp;
+        }
 
     Situation val;
     Situation var;
@@ -706,12 +705,10 @@ int main() {
             return 0;
         }
         /////////// znak, ,stan gry, poziom, alfa,      beta,       V
-        //var=minimax(oponent,tab_symb,0,minus_infinity,infinity,minus_infinity);
-        //computerMakeStep(var,tab_symb);
-        makeStep(oponent, tab_symb);
+        var=minimax(oponent,tab_symb,0,minus_infinity,infinity,minus_infinity);
+        computerMakeStep(var,tab_symb);
+        //makeStep(oponent, tab_symb);
         showBoard(tab_symb);
-        cout << "situationMark(): " << situationMark('o', tab_symb) << endl << "::::::::::::::::::::::::::::::    "
-             << endl;
         winning = isVictory(oponent, tab_symb);
         if (isVictory(oponent, tab_symb)) {
             cout << "\033[1;31m     Przegrałeś \033[0m" << endl;

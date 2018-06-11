@@ -29,8 +29,8 @@
       <file leaf-file-name="main.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="190">
-              <caret line="278" column="13" selection-start-line="278" selection-start-column="13" selection-end-line="278" selection-end-column="13" />
+            <state relative-caret-position="163">
+              <caret line="599" column="27" selection-start-line="599" selection-start-column="27" selection-end-line="599" selection-end-column="27" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
@@ -157,12 +157,12 @@
       <workItem from="1528063193147" duration="5704000" />
       <workItem from="1528568237696" duration="273000" />
       <workItem from="1528647532126" duration="3869000" />
-      <workItem from="1528665942402" duration="21541000" />
+      <workItem from="1528665942402" duration="24135000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="188269000" />
+    <option name="totallyTimeSpent" value="190863000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="-1" width="1366" height="768" extended-state="6" />
@@ -174,7 +174,7 @@
       <window_info anchor="bottom" id="CMake" order="7" />
       <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="9" />
-      <window_info anchor="right" x="734" y="27" width="632" height="741" id="Run" order="3" type="WINDOWED" weight="0.30120483" />
+      <window_info anchor="right" x="684" y="27" width="682" height="741" id="Run" order="3" type="WINDOWED" weight="0.30120483" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="10" />
       <window_info id="Favorites" order="2" side_tool="true" />
@@ -439,8 +439,8 @@
     <entry file="file://$PROJECT_DIR$/gameOptions.h" />
     <entry file="file://$PROJECT_DIR$/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="278" column="13" selection-start-line="278" selection-start-column="13" selection-end-line="278" selection-end-column="13" />
+        <state relative-caret-position="163">
+          <caret line="599" column="27" selection-start-line="599" selection-start-column="27" selection-end-line="599" selection-end-column="27" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
           </folding>
